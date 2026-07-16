@@ -1,0 +1,122 @@
+3D_nnUNet_LaryngealLN/
+├── __init__.py
+# 1. 数据增强模块
+├── data_augmentation
+│   ├── __init__.py
+│   ├── compute_initial_patch_size.py
+│   ├── custom_transforms
+│   │   ├── __init__.py
+│   │   ├── cascade_transforms.py
+│   │   ├── deep_supervision_downsampling.py
+│   │   ├── limited_length_multithreaded_augmenter.py
+│   │   ├── manipulating_data_dict.py
+│   │   ├── masking.py
+│   │   ├── region_based_training.py
+│   │   └── transforms_for_dummy_2d.py
+│   └── train_aug_pipeline.py       # 自定义CT增强数据增强流水线
+# 2. 数据集加载模块
+├── dataloading
+│   ├── __init__.py
+│   ├── base_data_loader.py
+│   ├── data_loader_2d.py
+│   ├── data_loader_3d.py           # 3D CT专用数据加载器
+│   ├── nnunet_dataset.py
+│   └── utils.py                    # NIfTI读取、窗宽窗位预处理工具
+# 3. 日志管理模块
+├── logging
+│   ├── __init__.py
+│   └── nnunet_logger.py
+# 4. 损失函数模块（淋巴结分割专用）
+├── loss
+│   ├── __init__.py
+│   ├── compound_losses.py          # Dice+CE复合损失
+│   ├── deep_supervision.py
+│   ├── dice.py
+│   ├── robust_ce_loss.py
+│   └── focal_tversky_loss.py       # 针对小淋巴结的Focal-Tversky损失
+# 5. 学习率调度模块
+├── lr_scheduler
+│   ├── __init__.py
+│   └── polylr.py
+# 6. 网络结构定义模块
+├── network_arch
+│   ├── __init__.py
+│   ├── nnunet_3d_fullres.py        # 标准3D nnUNet主干网络
+│   ├── residual_block.py
+│   ├── attention_gate.py           # 可选注意力模块（淋巴结微小病灶优化）
+│   └── deep_supervision_head.py
+# 7. 优化器模块
+├── optimizer
+│   ├── __init__.py
+│   ├── adam_optimizer.py
+│   └── adan_optimizer.py
+# 8. 采样策略模块（解决淋巴结正负样本不均衡）
+├── sampling
+│   ├── __init__.py
+│   ├── probabilistic_oversampling.py  # 前景过采样
+│   └── balanced_patch_sampler.py
+# 9. 训练器核心入口模块（主训练逻辑）
+├── nnUNetTrainer
+│   ├── __init__.py
+│   ├── nnUNetTrainer.py                # 训练主入口
+│   └── variants
+│       ├── __init__.py
+│       ├── benchmarking
+│       │   ├── __init__.py
+│       │   ├── nnUNetTrainerBenchmark_5epochs.py
+│       │   └── nnUNetTrainerBenchmark_5epochs_noDataLoading.py
+│       ├── data_augmentation           # 数据增强变体
+│       │   ├── __init__.py
+│       │   ├── nnUNetTrainerDA5.py
+│       │   ├── nnUNetTrainerDAOrd0.py
+│       │   ├── nnUNetTrainerNoDA.py
+│       │   └── nnUNetTrainerNoMirroring.py
+│       ├── loss                        # 损失函数变体
+│       │   ├── __init__.py
+│       │   ├── nnUNetTrainerCELoss.py
+│       │   ├── nnUNetTrainerDiceLoss.py
+│       │   ├── nnUNetTrainerFocalTversky.py
+│       │   └── nnUNetTrainerTopkLoss.py
+│       ├── lr_schedule                 # 学习率变体
+│       │   ├── __init__.py
+│       │   └── nnUNetTrainerCosAnneal.py
+│       ├── network_architecture        # 网络结构变体
+│       │   ├── __init__.py
+│       │   ├── nnUNetTrainerAttentionUNet.py
+│       │   ├── nnUNetTrainerBN.py
+│       │   └── nnUNetTrainerNoDeepSupervision.py
+│       ├── optimizer                   # 优化器变体
+│       │   ├── __init__.py
+│       │   ├── nnUNetTrainerAdam.py
+│       │   └── nnUNetTrainerAdan.py
+│       ├── sampling                    # 采样策略变体
+│       │   ├── __init__.py
+│       │   └── nnUNetTrainer_probabilisticOversampling.py
+│       └── training_length             # 训练轮次变体
+│           ├── __init__.py
+│           ├── nnUNetTrainer_1000epochs.py
+│           ├── nnUNetTrainer_1000epochs_NoMirroring.py
+│           ├── nnUNetTrainer_Xepochs_NoMirroring.py
+│           └── nnUNetTrainer_Xepochs.py
+# 10. 预处理、数据集格式转换工具
+├── preprocessing
+│   ├── __init__.py
+│   ├── dataset_convert.py             # 原始CT转nnUNet标准NIfTI
+│   ├── plan_and_preprocess.py
+│   └── ct_window_normalize.py         # 增强CT窗宽窗位归一化
+# 11. 推理预测模块
+├── inference
+│   ├── __init__.py
+│   ├── predict_from_raw_ct.py         # 单病例/批量CT推理
+│   └── postprocess.py                 # 淋巴结后处理（去除微小假阳性）
+# 12. 模型评估指标模块
+├── evaluation
+│   ├── __init__.py
+│   ├── compute_metrics.py             # Dice、IoU、HD95、 Recall计算
+│   └── save_metric_json.py
+# 13. 工具脚本（项目根目录，一键运行）
+├── install_env.sh                     # 环境一键安装脚本
+├── train_3d_nnunet.sh                 # 5折训练启动脚本
+├── run_inference.py                   # 推理启动入口
+├── evaluate_model.py                  # 评估启动入口
+└── README.md                          # 代码说明、开源声明、使用教程
