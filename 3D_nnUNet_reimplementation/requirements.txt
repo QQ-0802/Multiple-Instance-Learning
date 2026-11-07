@@ -1,0 +1,5 @@
+# Install hardware-compatible PyTorch first.
+nnunetv2
+numpy
+scipy
+nibabel

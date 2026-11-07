@@ -1,0 +1,4 @@
+case_id,patient_id,split,ct_path,mask_path
+CASE001,PAT001,train,/private/case001_ct.nii.gz,/private/case001_mask.nii.gz
+CASE002,PAT002,train,/private/case002_ct.nii.gz,/private/case002_mask.nii.gz
+CASE003,PAT003,external_1,/private/case003_ct.nii.gz,
